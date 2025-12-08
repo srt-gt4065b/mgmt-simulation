@@ -1459,7 +1459,7 @@
         // ============================================
         // 화면 전환
         // ============================================
-        window.showScreen = function(screenName) {
+        function showScreen(screenName) {
             // 모든 화면 숨기기
             const screens = document.querySelectorAll('.screen');
             screens.forEach(screen => screen.classList.remove('active'));
@@ -1473,13 +1473,18 @@
             // 네비게이션 활성화 상태 변경
             const navItems = document.querySelectorAll('.nav-item');
             navItems.forEach(item => item.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
             
             // 화면별 데이터 로드
             if (screenName === 'ranking') {
                 loadRankingData();
             }
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.showScreen = showScreen;
 
         // ============================================
         // 순위판 데이터 로드
@@ -1518,7 +1523,7 @@
         // ============================================
         // 의사결정 제출 (배치 작업 사용)
         // ============================================
-        window.submitDecision = async function() {
+        async function submitDecision() {
             showToast('의사결정을 제출하는 중...');
             
             const decision = {
@@ -1570,49 +1575,66 @@
                 console.error('의사결정 제출 실패:', error);
                 showToast('❌ 제출 실패. 다시 시도해주세요.');
             }
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.submitDecision = submitDecision;
 
         // ============================================
         // 슬라이더 값 업데이트
         // ============================================
-        window.updateSliderValue = function(type, value) {
+        function updateSliderValue(type, value) {
             const formattedValue = parseInt(value).toLocaleString();
             if (type === 'production') {
                 document.getElementById('productionValue').textContent = formattedValue + ' 개';
             } else if (type === 'hiring') {
                 document.getElementById('hiringValue').textContent = formattedValue + ' 명';
             }
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.updateSliderValue = updateSliderValue;
 
         // ============================================
         // 미션 시작
         // ============================================
-        window.startMission = function() {
+        function startMission() {
             showToast('🚀 미션을 시작합니다!');
             setTimeout(() => {
                 showScreen('market');
             }, 1000);
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.startMission = startMission;
 
         // ============================================
         // 전략회의 화면 표시
         // ============================================
-        window.showDecisionScreen = function() {
+        function showDecisionScreen() {
             showScreen('market');
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.showDecisionScreen = showDecisionScreen;
 
         // ============================================
         // 순위판 탭 전환
         // ============================================
-        window.switchRankingTab = function(tab) {
+        function switchRankingTab(tab) {
             const tabs = document.querySelectorAll('.ranking-tab');
             tabs.forEach(t => t.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
             
             if (tab === 'friends') {
                 showToast('친구 팀 기능은 곧 출시됩니다!');
             }
-        };
+        }
+        
+        // 전역 접근을 위해 window 객체에 할당
+        window.switchRankingTab = switchRankingTab;
 
         // ============================================
         // 토스트 알림
