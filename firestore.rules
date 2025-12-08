@@ -1,0 +1,163 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // 개발 모드: 모든 읽기/쓰기 허용 (테스트용)
+    // 프로덕션 배포 전에 반드시 아래 프로덕션 규칙으로 교체하세요!
+    // ============================================
+    
+    // 개발용 규칙 (임시) - 주석 처리 후 프로덕션 규칙 사용
+    match /{document=**} {
+      allow read, write: if true;
+    }
+    
+    // ============================================
+    // 프로덕션 규칙 (아래 주석 해제하여 사용)
+    // ============================================
+    
+    /*
+    // 헬퍼 함수
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isTeamMember(teamId) {
+      return isAuthenticated() && 
+             request.auth.uid in get(/databases/$(database)/documents/teams/$(teamId)).data.members;
+    }
+    
+    function isCourseInstructor(courseId) {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid;
+    }
+    
+    // ============================================
+    // Teams Collection
+    // ============================================
+    match /teams/{teamId} {
+      // 읽기: 같은 수업의 모든 학생
+      allow read: if isAuthenticated() && 
+                     resource.data.courseId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.currentCourse;
+      
+      // 쓰기: 팀 멤버만 (제한적 업데이트)
+      allow update: if isTeamMember(teamId) && 
+                       // XP, 레벨 등 게임 상태는 Cloud Functions에서만 업데이트
+                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(
+                         ['level', 'totalXP', 'capital', 'revenue', 'rank']
+                       );
+      
+      // 생성/삭제: 교수자만
+      allow create, delete: if isCourseInstructor(request.resource.data.courseId);
+    }
+    
+    // ============================================
+    // Decisions Collection
+    // ============================================
+    match /decisions/{decisionId} {
+      // 읽기: 해당 팀 멤버 또는 교수자
+      allow read: if isAuthenticated() && (
+                     isTeamMember(resource.data.teamId) ||
+                     isCourseInstructor(resource.data.courseId)
+                   );
+      
+      // 쓰기: 팀 멤버만 (자신의 결정만)
+      allow create: if isAuthenticated() && 
+                       isTeamMember(request.resource.data.teamId) &&
+                       request.resource.data.submittedBy == request.auth.uid;
+      
+      // 수정/삭제: 제출자 본인만 (제출 후 10분 이내)
+      allow update, delete: if isAuthenticated() && 
+                               resource.data.submittedBy == request.auth.uid &&
+                               request.time < resource.data.submittedAt + duration.value(10, 'm');
+    }
+    
+    // ============================================
+    // Game State Collection
+    // ============================================
+    match /gameState/{gameId} {
+      // 읽기: 해당 수업의 모든 학생
+      allow read: if isAuthenticated() && 
+                     resource.data.courseId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.currentCourse;
+      
+      // 쓰기: 교수자 또는 Cloud Functions만
+      allow write: if isCourseInstructor(resource.data.courseId);
+    }
+    
+    // ============================================
+    // Achievements Collection (개인 업적)
+    // ============================================
+    match /achievements/{userId} {
+      // 읽기: 본인만
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      
+      // 쓰기: Cloud Functions만 (XP 조작 방지)
+      allow write: if false;
+    }
+    
+    // ============================================
+    // Leaderboard Collection
+    // ============================================
+    match /leaderboard/{courseId} {
+      // 읽기: 해당 수업의 모든 학생
+      allow read: if isAuthenticated() && 
+                     courseId == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.currentCourse;
+      
+      // 쓰기: Cloud Functions만
+      allow write: if false;
+    }
+    
+    // ============================================
+    // Users Collection
+    // ============================================
+    match /users/{userId} {
+      // 읽기: 본인 또는 같은 팀원
+      allow read: if isAuthenticated() && (
+                     request.auth.uid == userId ||
+                     request.auth.uid in resource.data.teamMembers
+                   );
+      
+      // 쓰기: 본인만 (제한적 업데이트)
+      allow update: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       // 중요 필드는 변경 불가
+                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(
+                         ['role', 'teamId', 'courseId']
+                       );
+      
+      // 생성: 인증된 사용자 (최초 가입 시)
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // ============================================
+    // Courses Collection
+    // ============================================
+    match /courses/{courseId} {
+      // 읽기: 등록된 학생
+      allow read: if isAuthenticated() && 
+                     request.auth.uid in resource.data.students;
+      
+      // 쓰기: 교수자만
+      allow write: if isCourseInstructor(courseId);
+    }
+    
+    // ============================================
+    // Chat Messages (향후 기능)
+    // ============================================
+    match /teamChats/{chatId}/messages/{messageId} {
+      // 읽기: 해당 팀 멤버
+      allow read: if isAuthenticated() && 
+                     isTeamMember(get(/databases/$(database)/documents/teamChats/$(chatId)).data.teamId);
+      
+      // 쓰기: 해당 팀 멤버 (자신의 메시지만)
+      allow create: if isAuthenticated() && 
+                       isTeamMember(get(/databases/$(database)/documents/teamChats/$(chatId)).data.teamId) &&
+                       request.resource.data.senderId == request.auth.uid;
+      
+      // 삭제: 본인 메시지만
+      allow delete: if isAuthenticated() && 
+                       resource.data.senderId == request.auth.uid;
+    }
+    */
+  }
+}
