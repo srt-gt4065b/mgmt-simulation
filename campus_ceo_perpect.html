@@ -1,0 +1,1218 @@
+erfect · HTML
+복사
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus CEO</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Malgun Gothic', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        .screen {
+            display: none;
+            padding-bottom: 80px;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        /* 헤더 */
+        .header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        /* 카드 */
+        .card {
+            background: white;
+            margin: 16px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h3::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+        
+        /* 레벨 카드 */
+        .level-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .level-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .level-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-right: 16px;
+        }
+        
+        .level-details h4 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+        
+        .level-details p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFD700, #FFA500);
+            border-radius: 5px;
+            transition: width 0.5s;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* 미션 카드 */
+        .mission-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .mission-card h3 {
+            color: white;
+        }
+        
+        .mission-card p {
+            color: white;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+        
+        /* 버튼 */
+        .btn {
+            border: none;
+            padding: 14px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+        
+        /* 통계 그리드 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        
+        .stat-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-change {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-left: 4px;
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* 도전과제 */
+        .challenge-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .challenge-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 12px;
+        }
+        
+        .challenge-info {
+            flex: 1;
+        }
+        
+        .challenge-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .challenge-desc {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .challenge-progress {
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .challenge-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.5s;
+        }
+        
+        .challenge-reward {
+            font-size: 16px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+        
+        /* 팀원 그리드 */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 20px 0;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .member-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 8px;
+        }
+        
+        .member-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .member-role {
+            font-size: 12px;
+            color: #999;
+            background: #f0f0f0;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        
+        /* 의사결정 진행 */
+        .decision-progress {
+            margin: 20px 0;
+        }
+        
+        .decision-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .decision-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .decision-icon.done {
+            background: #4CAF50;
+        }
+        
+        .decision-info {
+            flex: 1;
+        }
+        
+        .decision-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .decision-desc {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* 순위판 */
+        .ranking-header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .ranking-header h2 {
+            font-size: 14px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+        
+        .rank-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .rank-desc {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .ranking-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            background: white;
+        }
+        
+        .ranking-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #f0f0f0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .ranking-tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .podium {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 30px 20px;
+            background: white;
+        }
+        
+        .podium-place {
+            flex: 1;
+            text-align: center;
+            margin: 0 8px;
+        }
+        
+        .podium-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .podium-place:nth-child(2) .podium-avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+        }
+        
+        .podium-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .podium-bar {
+            background: linear-gradient(to top, #C0C0C0, #E8E8E8);
+            border-radius: 8px 8px 0 0;
+            color: white;
+            font-weight: 700;
+            padding: 12px 8px;
+            font-size: 20px;
+        }
+        
+        .podium-place:nth-child(1) .podium-bar { height: 100px; }
+        .podium-place:nth-child(2) .podium-bar { 
+            height: 140px; 
+            background: linear-gradient(to top, #FFD700, #FFA500);
+        }
+        .podium-place:nth-child(3) .podium-bar { 
+            height: 120px;
+            background: linear-gradient(to top, #CD7F32, #DDA15E);
+        }
+        
+        .ranking-list {
+            padding: 0 16px 16px;
+        }
+        
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .ranking-item.highlight {
+            background: linear-gradient(135deg, rgba(240,147,251,0.1), rgba(245,87,108,0.1));
+            border: 2px solid #f5576c;
+        }
+        
+        .ranking-number {
+            width: 40px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #999;
+        }
+        
+        .ranking-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .ranking-info {
+            flex: 1;
+        }
+        
+        .ranking-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .ranking-value {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .ranking-capital {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        /* 의사결정 입력 */
+        .decision-section {
+            margin-bottom: 24px;
+        }
+        
+        .decision-section h4 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .decision-section h4::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #667eea;
+            margin-right: 8px;
+            border-radius: 2px;
+        }
+        
+        .input-group {
+            margin-bottom: 16px;
+        }
+        
+        .input-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .slider-value {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+            margin-top: 8px;
+        }
+        
+        /* 배지 그리드 */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .badge-item {
+            text-align: center;
+        }
+        
+        .badge-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 8px;
+        }
+        
+        .badge-icon.locked {
+            background: #e0e0e0;
+            opacity: 0.5;
+        }
+        
+        .badge-name {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        /* 활동 통계 */
+        .activity-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .activity-stat {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .activity-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .activity-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .activity-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        /* 네비게이션 */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 8px;
+            border-top: 1px solid #e0e0e0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+        
+        .nav-item {
+            text-align: center;
+            color: #999;
+            font-size: 11px;
+            cursor: pointer;
+            flex: 1;
+            transition: all 0.3s;
+        }
+        
+        .nav-item.active {
+            color: #667eea;
+        }
+        
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        /* 토스트 */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 2000;
+            display: none;
+        }
+        
+        .toast.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="toast" id="toast"></div>
+        
+        <!-- 1. 홈 화면 -->
+        <div class="screen active" id="homeScreen">
+            <div class="header">
+                <h1>Campus CEO</h1>
+                <p>오늘도 성장하는 우리 팀 🚀</p>
+            </div>
+            
+            <div class="card level-card">
+                <div class="level-info">
+                    <div class="level-avatar">🏢</div>
+                    <div class="level-details">
+                        <h4 id="teamName">Team Alpha</h4>
+                        <p>레벨 <span id="teamLevel">8</span> · 순위 <span id="teamRank">3</span>위</p>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="xpProgress" style="width: 23%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span><span id="currentXP">460</span> XP</span>
+                        <span><span id="nextLevelXP">2,000</span> XP까지</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mission-card">
+                <h3>🎯 이번 주 팀 미션</h3>
+                <p>시장점유율 15% 달성하기!<br>팀원들과 전략회의를 통해 Q2 목표를 완성하세요.</p>
+                <button class="btn btn-outline" onclick="showScreen('team')">미션 시작하기</button>
+            </div>
+            
+            <div class="card">
+                <h3>📊 우리 팀 실적</h3>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-value">250M</div>
+                        <div class="stat-label">자본금</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-value">45M <span class="stat-change">+12%</span></div>
+                        <div class="stat-label">매출</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🏭</div>
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">공장</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value">127</div>
+                        <div class="stat-label">직원</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🏆 이번 주 도전과제</h3>
+                <div class="challenge-item">
+                    <div class="challenge-icon">💰</div>
+                    <div class="challenge-info">
+                        <div class="challenge-title">매출 50M 돌파</div>
+                        <div class="challenge-desc">현재 매출 45M / 목표 50M</div>
+                        <div class="challenge-progress">
+                            <div class="challenge-progress-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                    <div class="challenge-reward">+100 XP</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 2. 팀경영 화면 -->
+        <div class="screen" id="teamScreen">
+            <div class="header">
+                <h1>Team Alpha</h1>
+                <p>레벨 8 · 순위 3위</p>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <button class="btn btn-outline" onclick="showScreen('market')">전략회의의 시작</button>
+            </div>
+            
+            <div class="card">
+                <h3>👥 팀원 및 역할</h3>
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">👨</div>
+                        <div class="member-name">김철수</div>
+                        <div class="member-role">CEO</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👩</div>
+                        <div class="member-name">이영희</div>
+                        <div class="member-role">CFO</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👨</div>
+                        <div class="member-name">박민수</div>
+                        <div class="member-role">CMO</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👩</div>
+                        <div class="member-name">최지연</div>
+                        <div class="member-role">COO</div>
+                    </div>
+                    <div class="team-member">
+                        <div class="member-avatar">👨</div>
+                        <div class="member-name">정수현</div>
+                        <div class="member-role">CHRO</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📋 이번 턴 의사결정 (3/5 완료)</h3>
+                <div class="decision-progress">
+                    <div class="decision-item">
+                        <div class="decision-icon done">✓</div>
+                        <div class="decision-info">
+                            <div class="decision-title">생산계획 수립</div>
+                            <div class="decision-desc">COO: 당신 COO 목표 달성</div>
+                        </div>
+                    </div>
+                    <div class="decision-item">
+                        <div class="decision-icon done">✓</div>
+                        <div class="decision-info">
+                            <div class="decision-title">마케팅 예산 분배</div>
+                            <div class="decision-desc">CMO: 당신 CMO 예산 배정</div>
+                        </div>
+                    </div>
+                    <div class="decision-item">
+                        <div class="decision-icon done">✓</div>
+                        <div class="decision-info">
+                            <div class="decision-title">신제품 R&D 투자</div>
+                            <div class="decision-desc">CEO: 당신 CEO 연구 완료</div>
+                        </div>
+                    </div>
+                    <div class="decision-item">
+                        <div class="decision-icon">○</div>
+                        <div class="decision-info">
+                            <div class="decision-title">인력 채용 계획</div>
+                            <div class="decision-desc">CHRO: 당신 CHRO 실행</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 3. 순위판 화면 -->
+        <div class="screen" id="rankingScreen">
+            <div class="ranking-header">
+                <h2>마지막 업데이트 오후 12:02</h2>
+                <div class="rank-number">순위: 3위</div>
+                <p class="rank-desc">우수! 전체 팀 중 3등입니다.</p>
+            </div>
+            
+            <div class="ranking-tabs">
+                <div class="ranking-tab active">순위판</div>
+                <div class="ranking-tab">친구 팀</div>
+            </div>
+            
+            <div class="podium">
+                <div class="podium-place">
+                    <div class="podium-avatar">🏢</div>
+                    <div class="podium-name">Team Beta</div>
+                    <div class="podium-bar">3</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-avatar">🏢</div>
+                    <div class="podium-name">Team Delta</div>
+                    <div class="podium-bar">1</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-avatar">🏢</div>
+                    <div class="podium-name">Team Gamma</div>
+                    <div class="podium-bar">2</div>
+                </div>
+            </div>
+            
+            <div class="ranking-list">
+                <div class="ranking-item">
+                    <div class="ranking-number">👑</div>
+                    <div class="ranking-avatar">🏢</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Team Delta</div>
+                        <div class="ranking-value">시장점유율 22.5%</div>
+                    </div>
+                    <div class="ranking-capital">285M</div>
+                </div>
+                
+                <div class="ranking-item">
+                    <div class="ranking-number">2</div>
+                    <div class="ranking-avatar">🏢</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Team Gamma</div>
+                        <div class="ranking-value">시장점유율 20.5%</div>
+                    </div>
+                    <div class="ranking-capital">265M</div>
+                </div>
+                
+                <div class="ranking-item highlight">
+                    <div class="ranking-number">3</div>
+                    <div class="ranking-avatar">🏢</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">우리팀 (Team Alpha)</div>
+                        <div class="ranking-value">시장점유율 18.5%</div>
+                    </div>
+                    <div class="ranking-capital">250M</div>
+                </div>
+                
+                <div class="ranking-item">
+                    <div class="ranking-number">4</div>
+                    <div class="ranking-avatar">🏢</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Team Epsilon</div>
+                        <div class="ranking-value">시장점유율 16.2%</div>
+                    </div>
+                    <div class="ranking-capital">235M</div>
+                </div>
+                
+                <div class="ranking-item">
+                    <div class="ranking-number">5</div>
+                    <div class="ranking-avatar">🏢</div>
+                    <div class="ranking-info">
+                        <div class="ranking-name">Team Zeta</div>
+                        <div class="ranking-value">시장점유율 14.1%</div>
+                    </div>
+                    <div class="ranking-capital">220M</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 4. 전략 의사결정 화면 -->
+        <div class="screen" id="marketScreen">
+            <div class="header">
+                <h1>💼 전략 의사결정</h1>
+                <p>이번 턴 경영 결정을 내려주세요</p>
+            </div>
+            
+            <div class="card">
+                <div class="decision-section">
+                    <h4>🏭 생산 부문 (COO)</h4>
+                    <div class="input-group">
+                        <label class="input-label">생산량</label>
+                        <input type="range" class="slider" min="0" max="20000" value="10000" 
+                               oninput="updateValue('production', this.value)">
+                        <div class="slider-value" id="productionValue">10,000 개</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">품질 투자 (만원)</label>
+                        <input type="number" class="input-field" value="500" placeholder="500">
+                    </div>
+                </div>
+                
+                <div class="decision-section">
+                    <h4>📢 마케팅 부문 (CMO)</h4>
+                    <div class="input-group">
+                        <label class="input-label">광고 예산 (만원)</label>
+                        <input type="number" class="input-field" value="1000" placeholder="1000">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">제품 가격 (원)</label>
+                        <input type="number" class="input-field" value="150" placeholder="150">
+                    </div>
+                </div>
+                
+                <div class="decision-section">
+                    <h4>💰 재무 부문 (CFO)</h4>
+                    <div class="input-group">
+                        <label class="input-label">투자 금액 (만원)</label>
+                        <input type="number" class="input-field" value="500" placeholder="500">
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">대출 금액 (만원)</label>
+                        <input type="number" class="input-field" value="0" placeholder="0">
+                    </div>
+                </div>
+                
+                <div class="decision-section">
+                    <h4>👥 인사 부문 (CHRO)</h4>
+                    <div class="input-group">
+                        <label class="input-label">신규 채용 인원</label>
+                        <input type="range" class="slider" min="0" max="50" value="10" 
+                               oninput="updateValue('hiring', this.value)">
+                        <div class="slider-value" id="hiringValue">10 명</div>
+                    </div>
+                    <div class="input-group">
+                        <label class="input-label">교육 투자 (만원)</label>
+                        <input type="number" class="input-field" value="300" placeholder="300">
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="submitDecision()">의사결정 제출하기</button>
+            </div>
+        </div>
+        
+        <!-- 5. 내 페이지 -->
+        <div class="screen" id="profileScreen">
+            <div class="header">
+                <h1>내 페이지</h1>
+                <p>나의 성장 기록</p>
+            </div>
+            
+            <div class="card level-card">
+                <div class="level-info">
+                    <div class="level-avatar">👨</div>
+                    <div class="level-details">
+                        <h4>김철수 (CEO)</h4>
+                        <p>레벨 8</p>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 23%"></div>
+                    </div>
+                    <div class="progress-text">
+                        <span>460 XP</span>
+                        <span>2,000 XP까지</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📊 활동 통계</h3>
+                <div class="activity-stats">
+                    <div class="activity-stat">
+                        <div class="activity-icon">📈</div>
+                        <div class="activity-value">45</div>
+                        <div class="activity-label">매출액 달성</div>
+                    </div>
+                    <div class="activity-stat">
+                        <div class="activity-icon">📄</div>
+                        <div class="activity-value">8</div>
+                        <div class="activity-label">보고서 제출</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>🏆 획득한 배지</h3>
+                <div class="badge-grid">
+                    <div class="badge-item">
+                        <div class="badge-icon">🏭</div>
+                        <div class="badge-name">제조마스터</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">💰</div>
+                        <div class="badge-name">생산왕</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">📢</div>
+                        <div class="badge-name">마케팅킹</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">👥</div>
+                        <div class="badge-name">영업챔피언</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">💡</div>
+                        <div class="badge-name">혁신</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">🥇</div>
+                        <div class="badge-name">금메달</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">💎</div>
+                        <div class="badge-name">다이아몬드</div>
+                    </div>
+                    <div class="badge-item">
+                        <div class="badge-icon">⭐</div>
+                        <div class="badge-name">별</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📱 최근 활동</h3>
+                <p style="color: #666; font-size: 14px;">준비 중입니다...</p>
+            </div>
+        </div>
+        
+        <!-- 네비게이션 바 -->
+        <div class="nav-bar">
+            <div class="nav-item active" onclick="showScreen('home')">
+                <div class="nav-icon">🏠</div>
+                <div>홈</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('team')">
+                <div class="nav-icon">👥</div>
+                <div>팀경영</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('ranking')">
+                <div class="nav-icon">🏆</div>
+                <div>순위판</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('market')">
+                <div class="nav-icon">💼</div>
+                <div>의사결정</div>
+            </div>
+            <div class="nav-item" onclick="showScreen('profile')">
+                <div class="nav-icon">👤</div>
+                <div>내정보</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK v8 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
+    <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Firebase 초기화
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        let currentUser = null;
+
+        // 화면 전환
+        function showScreen(screenName) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenName + 'Screen').classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            }
+        }
+
+        // 슬라이더 값 업데이트
+        function updateValue(type, value) {
+            const formatted = parseInt(value).toLocaleString();
+            if (type === 'production') {
+                document.getElementById('productionValue').textContent = formatted + ' 개';
+            } else if (type === 'hiring') {
+                document.getElementById('hiringValue').textContent = formatted + ' 명';
+            }
+        }
+
+        // 의사결정 제출
+        function submitDecision() {
+            showToast('✅ 의사결정이 제출되었습니다! (+20 XP)');
+            setTimeout(() => {
+                showScreen('home');
+            }, 1500);
+        }
+
+        // 토스트 알림
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // 인증
+        auth.signInAnonymously()
+            .then(() => {
+                console.log('✅ 인증 완료');
+                showToast('환영합니다! 🎉');
+            })
+            .catch(() => {
+                console.log('⚠️ 오프라인 모드');
+            });
+
+        console.log('✅ Campus CEO 앱 시작!');
+    </script>
+</body>
+</html>
